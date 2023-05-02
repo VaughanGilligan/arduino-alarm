@@ -7,7 +7,7 @@
 /* Fill-in information from Blynk Device Info here */
 #define BLYNK_TEMPLATE_ID           "TMPL4srzaodTO"
 #define BLYNK_TEMPLATE_NAME         "Quickstart Template"
-#define BLYNK_AUTH_TOKEN            "4-eoqHnIKOaHwVu78VseWcZmQYkIBBde"
+#define BLYNK_AUTH_TOKEN            "-y01C3LAmwiEDjk2V5hNCfZeRkU3-tzd"
 
 /* Comment this out to disable prints and save space */
 #define BLYNK_PRINT Serial
@@ -16,11 +16,9 @@
 #include <Bridge.h>
 #include <BlynkSimpleYun.h>
 
-int ledPin = 9; // LED connected to digital pin 9
-int buttonPin = A1;
+int ledPin = 13; // LED connected to digital pin 13
+//int buttonPin = A1;
 int buzzerPin = 8;
-int buttonState = 0;
-int buttonCount = 0;
 
 BlynkTimer timer;
 
@@ -33,6 +31,26 @@ BLYNK_WRITE(V0)
   // Update state
   Blynk.virtualWrite(V1, value);
   digitalWrite(13, value);
+  while (value == 1)
+  {
+for (int fadeValue = 0 ; fadeValue <= 255; fadeValue += 5) 
+    {
+    // sets the value (range from 0 to 255):
+    analogWrite(ledPin, fadeValue);
+    analogWrite(buzzerPin, fadeValue);
+    // wait for 30 milliseconds to see the dimming effect
+    delay(30);
+    }
+
+for (int fadeValue = 255 ; fadeValue >= 0; fadeValue -= 5) 
+   {
+    // sets the value (range from 0 to 255):
+    analogWrite(ledPin, fadeValue);
+    analogWrite(buzzerPin, fadeValue);
+    // wait for 30 milliseconds to see the dimming effect
+    delay(30);
+  }
+}
 }
 
 // This function is called every time the device is connected to the Blynk.Cloud
@@ -68,35 +86,10 @@ void setup()
 
 void loop()
 {
- // fade in from min to max in increments of 5 points:
-buttonState = analogRead(A1);
-
-  
-  if (buttonState == HIGH)
-  {
-    for (int fadeValue = 0 ; fadeValue <= 255; fadeValue += 5) 
-    {
-    // sets the value (range from 0 to 255):
-    analogWrite(ledPin, fadeValue);
-    analogWrite(buzzerPin, fadeValue);
-    // wait for 30 milliseconds to see the dimming effect
-    delay(30);
-    }
-
-      // fade out from max to min in increments of 5 points:
-  for (int fadeValue = 255 ; fadeValue >= 0; fadeValue -= 5) {
-    // sets the value (range from 0 to 255):
-    analogWrite(ledPin, fadeValue);
-    analogWrite(buzzerPin, fadeValue);
-    // wait for 30 milliseconds to see the dimming effect
-    delay(30);
-  }
-  
-    
-  }
-  else
-  {
-    digitalWrite(ledPin, LOW);
-    digitalWrite(buzzerPin, LOW);
-  }
+  Blynk.run();
+  timer.run();
+  // You can inject your own code or combine it with other sketches.
+  // Check other examples on how to communicate with Blynk. Remember
+  // to avoid delay() function!
 }
+
